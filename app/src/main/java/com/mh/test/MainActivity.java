@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 View viewById = findViewById(R.id.et_test);
                 viewById.requestFocus();
             });
-            InputManager inputManager = InputManager.getInstance(this);
+            InputManager inputManager = InputManager.getInstance();
             ControlMessage controlMessage = ControlMessage.createInjectText("765456456");
 
             inputManager.handleEvent(controlMessage);

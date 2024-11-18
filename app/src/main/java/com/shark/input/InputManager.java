@@ -21,9 +21,9 @@ public class InputManager {
     private static InputManager instance;
 
     // 私有构造函数，防止外部实例化
-    private InputManager(Context context) {
+    private InputManager() {
         // 初始化操作
-        IBinder requestBinder = requestBinder(context, context.getPackageName());
+        IBinder requestBinder = requestBinder(null, "noName");
         if (requestBinder == null) {
             Log.e(TAG, "requestBinder is null ");
             return;
@@ -39,6 +39,11 @@ public class InputManager {
         } catch (Exception e) {
             Log.e(TAG, "handleEvent: ", e);
         }
+    }
+
+    public void inputText(String text) {
+        ControlMessage controlMessage = ControlMessage.createInjectText(text);
+        handleEvent(controlMessage);
     }
 
 
@@ -99,11 +104,11 @@ public class InputManager {
     }
 
     // 提供全局访问点，使用双重检查锁实现线程安全的单例
-    public static InputManager getInstance(Context context) {
+    public static InputManager getInstance() {
         if (instance == null) {
             synchronized (InputManager.class) {
                 if (instance == null) {
-                    instance = new InputManager(context);
+                    instance = new InputManager();
                 }
             }
         }
