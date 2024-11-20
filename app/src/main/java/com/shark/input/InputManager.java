@@ -11,6 +11,11 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.shark.aidl.IInputService;
 import com.shark.input.model.ControlMessage;
+import com.shark.input.model.Input;
+import com.shark.input.model.Point;
+import com.shark.input.model.Position;
+import com.shark.input.model.Size;
+import com.shark.utils.SleepUtil;
 
 public class InputManager {
     public static final String TAG = "SharkChilli";
@@ -41,11 +46,46 @@ public class InputManager {
         }
     }
 
+    public void injectKeycode(int action, Integer keycode) {
+        ControlMessage controlMessage = ControlMessage.createInjectKeycode(action, keycode, 0, 0);
+        handleEvent(controlMessage);
+    }
+
+    public void downKeycode(Integer keycode) {
+        injectKeycode(Input.AKEY_EVENT_ACTION_DOWN, keycode);
+    }
+
+    public void upKeycode(Integer keycode) {
+        injectKeycode(Input.AKEY_EVENT_ACTION_UP, keycode);
+    }
+
+    public void downUpKeycode(Integer keycode) {
+        downKeycode(keycode);
+        SleepUtil.randomSleep(50, 150);
+        upKeycode(keycode);
+    }
+
     public void inputText(String text) {
         ControlMessage controlMessage = ControlMessage.createInjectText(text);
         handleEvent(controlMessage);
     }
 
+    //{"action":0,"actionButton":1,"buttons":1,"copyKey":0,"hScroll":0.0,"keycode":0,"metaState":0,"paste":false,"pointerId":-1,"position":{"point":{"x":334,"y":271},"screenSize":{"height":816,"width":376}},"pressure":1.5258789E-5,"repeat":0,"sequence":0,"type":2,"vScroll":0.0}
+    //{type=2, text='null', metaState=0, action=0, keycode=0, actionButton=1, buttons=1, pointerId=-1, pressure=1.5258789E-5, position=Position{point=Point{x=280, y=163}, screenSize=Size{width=376, height=816}}, hScroll=0.0, vScroll=0.0, copyKey=0, paste=false, repeat=0, sequence=0}
+    //{type=2, text='null', metaState=0, action=0, keycode=0, actionButton=1, buttons=1, pointerId=-1, pressure=1.5258789E-5, position=Position{point=Point{x=280, y=163}, screenSize=Size{width=376, height=816}}, hScroll=0.0, vScroll=0.0, copyKey=0, paste=false, repeat=0, sequence=0}
+    public void touch(int x, int y) {
+        Point point = new Point(x, y);
+        Size size = new Size(376, 816);
+        Position position = new Position(point, size);
+        ControlMessage controlMessage = ControlMessage.createInjectTouchEvent(Input.AKEY_EVENT_ACTION_DOWN, -1, position, (float) 1.5258789E-5, 1, 1);
+        handleEvent(controlMessage);
+        SleepUtil.randomSleep(50, 150);
+        ControlMessage controlMessage2 = ControlMessage.createInjectTouchEvent(Input.AKEY_EVENT_ACTION_UP, -1, position, (float) 0.0f, 1, 0);
+        handleEvent(controlMessage2);
+
+    }
+//{type=2, text='null', metaState=0, action=0, keycode=0, actionButton=1, buttons=1, pointerId=-1, pressure=1.5258789E-5, position=Position{point=Point{x=230, y=451}, screenSize=Size{width=376, height=816}}, hScroll=0.0, vScroll=0.0, copyKey=0, paste=false, repeat=0, sequence=0}
+//{type=2, text='null', metaState=0, action=1, keycode=0, actionButton=1, buttons=0, pointerId=-1, pressure=0.0,          position=Position{point=Point{x=230, y=451}, screenSize=Size{width=376, height=816}}, hScroll=0.0, vScroll=0.0, copyKey=0, paste=false, repeat=0, sequence=0}
 
     public static IBinder requestBinder(Context context, String niceName) {
         int BRIDGE_ACTION_GET_BINDER = 3;

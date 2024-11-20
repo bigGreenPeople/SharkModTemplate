@@ -27,7 +27,9 @@ public class HookMain implements IXposedHookLoadPackage {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                InputManager.getInstance().inputText("sadsakljikl");
+//                InputManager.getInstance().inputText("sadsakljikl");
+//                InputManager.getInstance().downUpKeycode(26);
+                InputManager.getInstance().touch(334,271);
             }
         }).start();
 
