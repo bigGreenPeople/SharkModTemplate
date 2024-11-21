@@ -17,6 +17,8 @@ import com.shark.input.model.Position;
 import com.shark.input.model.Size;
 import com.shark.utils.SleepUtil;
 
+import java.util.Random;
+
 public class InputManager {
     public static final String TAG = "SharkChilli";
     public IInputService iInputService;
@@ -82,8 +84,108 @@ public class InputManager {
         SleepUtil.randomSleep(50, 150);
         ControlMessage controlMessage2 = ControlMessage.createInjectTouchEvent(Input.AKEY_EVENT_ACTION_UP, -1, position, (float) 0.0f, 1, 0);
         handleEvent(controlMessage2);
-
     }
+
+    public void swipe(int startX, int startY, int endX, int endY) {
+        swipe(startX, startY, endX, endY, 100);
+    }
+
+
+    public void swipe(int startX, int startY, int endX, int endY, int time) {
+        Point point = new Point(startX, startY);
+        Size size = new Size(376, 816);
+        Position position = new Position(point, size);
+        ControlMessage controlMessage = ControlMessage.createInjectTouchEvent(Input.AKEY_EVENT_ACTION_DOWN, -1, position, (float) 1.5258789E-5, 1, 1);
+        handleEvent(controlMessage);
+
+
+        Random random = new Random();
+        int totalDistanceX = endX - startX; // 总的X轴位移
+        int totalDistanceY = endY - startY; // 总的Y轴位移
+
+        // 用于记录当前坐标
+        int currentX = startX;
+        int currentY = startY;
+
+        // 记录已经耗费的时间
+        int elapsedTime = 0;
+
+        // 开始滑动
+        while (elapsedTime < time) {
+            // 生成随机步长 (5 到 20)
+            int step = random.nextInt(16) + 5;
+
+            // 计算当前时间比例
+            float progress = Math.min((float) elapsedTime / time, 1);
+
+            // 根据比例计算理论上的目标位置
+            int targetX = startX + Math.round(totalDistanceX * progress);
+            int targetY = startY + Math.round(totalDistanceY * progress);
+
+            // 计算每步要移动的方向和大小
+            int deltaX = Math.min(Math.abs(targetX - currentX), step) * Integer.signum(totalDistanceX);
+            int deltaY = Math.min(Math.abs(targetY - currentY), step) * Integer.signum(totalDistanceY);
+
+            // 更新当前坐标
+            currentX += deltaX;
+            currentY += deltaY;
+
+            // 打印每次移动后的坐标
+            Log.i(TAG, "Current Position: (" + currentX + ", " + currentY + ")");
+            press(currentX, currentY);
+
+            // 模拟延迟
+            int delay = Math.min(step * time / Math.abs(totalDistanceX + totalDistanceY), time - elapsedTime);
+            elapsedTime += delay;
+
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // 确保最终位置是 (endX, endY)
+        Log.i(TAG, "Final Position: (" + endX + ", " + endY + ")");
+
+        Point point2 = new Point(endX, endY);
+        Size size2 = new Size(376, 816);
+        Position position2 = new Position(point2, size2);
+
+        ControlMessage controlMessage2 = ControlMessage.createInjectTouchEvent(Input.AKEY_EVENT_ACTION_UP, -1, position2, (float) 0.0f, 1, 0);
+
+        handleEvent(controlMessage2);
+    }
+
+    public void press(int x, int y) {
+        Point point2 = new Point(x, y);
+        Size size2 = new Size(376, 816);
+        Position position2 = new Position(point2, size2);
+        ControlMessage controlMessage2 = ControlMessage.createInjectTouchEvent(Input.AKEY_EVENT_ACTION_MULTIPLE, -1, position2, (float) 1.5258789E-5, 1, 1);
+        handleEvent(controlMessage2);
+    }
+
+    public void touchHold(int x, int y) {
+        this.touchHold(x, y, 3000);
+    }
+
+    public void touchHold(int x, int y, int sleepTime) {
+        Point point = new Point(x, y);
+        Size size = new Size(376, 816);
+        Position position = new Position(point, size);
+        ControlMessage controlMessage = ControlMessage.createInjectTouchEvent(Input.AKEY_EVENT_ACTION_DOWN, -1, position, (float) 1.5258789E-5, 1, 1);
+        handleEvent(controlMessage);
+        try {
+            // 休眠指定的时间
+            Thread.sleep(sleepTime);
+        } catch (InterruptedException e) {
+            // 捕获中断异常并恢复中断状态
+            Thread.currentThread().interrupt();
+        }
+        ControlMessage controlMessage2 = ControlMessage.createInjectTouchEvent(Input.AKEY_EVENT_ACTION_UP, -1, position, (float) 0.0f, 1, 0);
+        handleEvent(controlMessage2);
+    }
+
 //{type=2, text='null', metaState=0, action=0, keycode=0, actionButton=1, buttons=1, pointerId=-1, pressure=1.5258789E-5, position=Position{point=Point{x=230, y=451}, screenSize=Size{width=376, height=816}}, hScroll=0.0, vScroll=0.0, copyKey=0, paste=false, repeat=0, sequence=0}
 //{type=2, text='null', metaState=0, action=1, keycode=0, actionButton=1, buttons=0, pointerId=-1, pressure=0.0,          position=Position{point=Point{x=230, y=451}, screenSize=Size{width=376, height=816}}, hScroll=0.0, vScroll=0.0, copyKey=0, paste=false, repeat=0, sequence=0}
 
