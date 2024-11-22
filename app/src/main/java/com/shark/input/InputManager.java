@@ -131,7 +131,7 @@ public class InputManager {
             currentY += deltaY;
 
             // 打印每次移动后的坐标
-            Log.i(TAG, "Current Position: (" + currentX + ", " + currentY + ")");
+//            Log.i(TAG, "Current Position: (" + currentX + ", " + currentY + ")");
             press(currentX, currentY);
 
             // 模拟延迟
@@ -146,7 +146,7 @@ public class InputManager {
         }
 
         // 确保最终位置是 (endX, endY)
-        Log.i(TAG, "Final Position: (" + endX + ", " + endY + ")");
+//        Log.i(TAG, "Final Position: (" + endX + ", " + endY + ")");
 
         Point point2 = new Point(endX, endY);
         Size size2 = new Size(376, 816);

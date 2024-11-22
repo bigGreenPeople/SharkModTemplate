@@ -47,3 +47,38 @@ dependencies {
 
 //    compileOnly 'de.robv.android.xposed:api:82:sources'
 }
+
+ext {
+    //push的路径
+    pushPath = "/data/local/tmp/"
+    jarName = "test.apk"
+    targetPackage = "com.mh.test"
+}
+
+
+//将相关文件push到手机
+task pushApkRunDevice(dependsOn: 'assembleDebug') {
+    group 'Online-Device'
+    description 'Debug with online device without remote server'
+
+    doLast {
+        //push到手机上
+        def info = "adb push ${new File(project.buildDir, "/outputs/apk/debug/app-debug.apk").canonicalPath} $pushPath$jarName".execute().text
+        println "Push dex:$info"
+
+        // 获取当前构建变体的 packageName
+        def applicationId = android.applicationVariants.find { it.name == 'debug' }?.applicationId
+        if (applicationId == null) {
+            throw new GradleException("Could not find applicationId for debug variant.")
+        }
+
+        println "Package Name: $applicationId"
+
+        def executeCmd = "adb shell service call serial 6 s16 \"$applicationId\" s16 \"$targetPackage\""
+        println "executeCmd: $executeCmd"
+
+        info = executeCmd.execute().text
+        println "service call:$info"
+
+    }
+}
