@@ -21,7 +21,7 @@ public class HookMain implements IXposedHookLoadPackage {
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         //hook Toast
-        Log.i(TAG, "handleLoadPackage: ..............................................................................................");
+        Log.i(TAG, "handleLoadPackage : ...........................*");
 
         XposedHelpers.findAndHookMethod(
                 "android.app.Activity", // Hook Activity 类
