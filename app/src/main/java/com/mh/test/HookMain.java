@@ -89,21 +89,21 @@ public class HookMain implements IXposedHookLoadPackage {
 //                InputManager.getInstance().inputText("sadsakljikl");
 //                InputManager.getInstance().downUpKeycode(26);
 //                InputManager.getInstance().touch(334,271);
-//                InputManager.getInstance().swipe(241, 97, 235, 541);
+                InputManager.getInstance().swipe(241, 97, 235, 541);
             }
         }).start();
 
-//        Class<?> MainActivityClazz = lpparam.classLoader.loadClass("com.mh.test.MainActivity");
-//
-//        if (MainActivityClazz != null) {
-//            XposedHelpers.findAndHookMethod(MainActivityClazz, "test1", String.class, new XC_MethodHook() {
-//                @Override
-//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                    super.afterHookedMethod(param);
-//                    param.setResult("123453");
-//                }
-//            });
-//        }
+        Class<?> MainActivityClazz = lpparam.classLoader.loadClass("com.mh.test.MainActivity");
+
+        if (MainActivityClazz != null) {
+            XposedHelpers.findAndHookMethod(MainActivityClazz, "test1", String.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    super.afterHookedMethod(param);
+                    param.setResult("123453");
+                }
+            });
+        }
     }
 
 }
