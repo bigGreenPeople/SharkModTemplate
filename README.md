@@ -8,8 +8,8 @@
 
 此项目是SharkPosed模块模版
 
-### [使用文档](https://1243596620.gitbook.io/sharkmvvm-wen-dang/)
 
+项目已移至 [NexusControl](https://github.com/bigGreenPeople/NexusControl)
 ## Supported Language
 
 Java
